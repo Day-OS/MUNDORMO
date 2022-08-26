@@ -1,0 +1,6 @@
+name: Mundormo
+version: '${version}'
+main: com.daytheipc.mundormo.Mundormo
+api-version: 1.19
+authors: [ DayOS ]
+website: daytheipc.com
