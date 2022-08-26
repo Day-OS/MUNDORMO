@@ -45,3 +45,6 @@ processResources {
         expand props
     }
 }
+jar{
+    destinationDirectory.set(file("$projectDir/SERVER/plugins"))
+}
