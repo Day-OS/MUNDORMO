@@ -1,13 +1,16 @@
 package com.daytheipc.mundormo;
 
+import com.sun.tools.javac.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
@@ -21,6 +24,9 @@ import static org.bukkit.Bukkit.getServer;
 public final class Mundormo extends JavaPlugin implements Listener {
     Entities entities = new Entities();
 
+    public Plugin getInstance(){
+        return this;
+    }
     @Override
     public void onEnable() {
         Logger logger = getLogger();
@@ -44,10 +50,9 @@ public final class Mundormo extends JavaPlugin implements Listener {
     }
     @EventHandler
     public void onInteractAtEntity(PlayerInteractAtEntityEvent e){
-        Entity entity = e.getRightClicked();
-        PersistentDataContainer data = entity.getPersistentDataContainer();
-        NamespacedKey key = new NamespacedKey(this, "s");
-        //data.set(key, PersistentDataType.INTEGER, 1);
+        LivingEntity entity = (LivingEntity) e.getRightClicked();
+        //entities.setMobData(entity, "sus", "sus");
         e.getPlayer().sendMessage("" +  entity.getPersistentDataContainer().isEmpty());
+        //e.getPlayer().sendMessage("" +  entities.getMobDataString(entity, "sus"));
     }
 }

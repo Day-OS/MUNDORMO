@@ -1,13 +1,20 @@
 package com.daytheipc.mundormo;
 
-import org.bukkit.Location;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
+
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.bukkit.Bukkit.getLogger;
-import static org.bukkit.Bukkit.getServer;
+
+import static org.bukkit.Bukkit.*;
 
 public class Entities {
     //DISABLE WANDERER AND VILLAGER
@@ -28,13 +35,42 @@ public class Entities {
     float specialDropMultiplier; //cat returning item at night, wool quantity, milk quantity
     float breedingMultiplier;
     float weightMultiplier; //HOW MUCH MEAT does it return after getting killed
+    Plugin plugin;
 
+    private <T> void setMobData(Entity mob, String key,T data){
+        PersistentDataContainer persistentDataContainer = mob.getPersistentDataContainer();
+        NamespacedKey _key = new NamespacedKey("mundormo", key);
+        if (data instanceof Integer){persistentDataContainer.set(_key, PersistentDataType.INTEGER, (int)data);}
+        else if (data instanceof String){persistentDataContainer.set(_key, PersistentDataType.STRING, (String) data);}
+    }
+
+    private <T> Object getMobDataString(Entity mob, String key){
+        NamespacedKey _key = new NamespacedKey("mundormo", key);
+        return mob.getPersistentDataContainer().get(_key, PersistentDataType.STRING);
+    }
+
+    private <T> Object getMobDataInt(Entity mob, String key){
+        NamespacedKey _key = new NamespacedKey("mundormo", key);
+        return mob.getPersistentDataContainer().get(_key, PersistentDataType.INTEGER);
+    }
 
     public void _AreaCheck(){
-        Location a = getServer().getWorld("world").getPlayers().get(0).getLocation();
-        getLogger().log(Level.WARNING, "ATIVADO OAAAA BUNDA");
+        for (World w : Bukkit.getWorlds()){
+            for (Chunk c : w.getLoadedChunks()){
+                for (Entity entity : c.getEntities()){
+                    if (entity instanceof LivingEntity){
+                        if (entity.getPersistentDataContainer().isEmpty()){this.setMobData(entity, "age",0);}
+                        else{
+                        this.setMobData((LivingEntity)entity, "age", ((int)this.getMobDataInt(entity,"age")) + 1);
+                        entity.getPersistentDataContainer();
+                        }
+                    }
+                }
+            }
+        }
     }
-    public void MobSpawned(CreatureSpawnEvent e){
+
+    public static void MobSpawned(CreatureSpawnEvent e){
         LivingEntity entity = e.getEntity();
         entity.setGlowing(true);
     }
