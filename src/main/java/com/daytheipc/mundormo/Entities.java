@@ -44,34 +44,35 @@ public class Entities {
         else if (data instanceof String){persistentDataContainer.set(_key, PersistentDataType.STRING, (String) data);}
     }
 
-    private <T> Object getMobDataString(Entity mob, String key){
+    public <T> Object getMobDataString(Entity mob, String key){
         NamespacedKey _key = new NamespacedKey("mundormo", key);
         return mob.getPersistentDataContainer().get(_key, PersistentDataType.STRING);
     }
 
-    private <T> Object getMobDataInt(Entity mob, String key){
+    public <T> Object getMobDataInt(Entity mob, String key){
         NamespacedKey _key = new NamespacedKey("mundormo", key);
         return mob.getPersistentDataContainer().get(_key, PersistentDataType.INTEGER);
     }
-
-    public void _AreaCheck(){
-        for (World w : Bukkit.getWorlds()){
-            for (Chunk c : w.getLoadedChunks()){
-                for (Entity entity : c.getEntities()){
-                    if (entity instanceof LivingEntity){
-                        if (entity.getPersistentDataContainer().isEmpty()){this.setMobData(entity, "age",0);}
-                        else{
-                        this.setMobData((LivingEntity)entity, "age", ((int)this.getMobDataInt(entity,"age")) + 1);
-                        entity.getPersistentDataContainer();
-                        }
-                    }
-                }
-            }
-        }
+    public void InitMob(LivingEntity e){
+        this.setMobData(e, "age",0);
     }
 
-    public static void MobSpawned(CreatureSpawnEvent e){
+    public void _AreaCheck(){
+        for (World w : Bukkit.getWorlds()){for (Chunk c : w.getLoadedChunks()){for (Entity entity : c.getEntities()){
+            if (entity instanceof LivingEntity){
+                //FIRST TIME BEING SEEN BY CHECKER
+                if (entity.getPersistentDataContainer().isEmpty()){this.InitMob((LivingEntity) entity);} else{
+                    //Normal cycle
+                    this.setMobData((LivingEntity)entity, "age", ((int)this.getMobDataInt(entity,"age")) + 1);
+                    entity.getPersistentDataContainer();
+                }
+            }
+        }}}
+    }
+
+    public void MobSpawned(CreatureSpawnEvent e){
         LivingEntity entity = e.getEntity();
         entity.setGlowing(true);
+        this.InitMob(entity);
     }
 }

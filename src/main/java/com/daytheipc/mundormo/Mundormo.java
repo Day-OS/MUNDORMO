@@ -53,6 +53,6 @@ public final class Mundormo extends JavaPlugin implements Listener {
         LivingEntity entity = (LivingEntity) e.getRightClicked();
         //entities.setMobData(entity, "sus", "sus");
         e.getPlayer().sendMessage("" +  entity.getPersistentDataContainer().isEmpty());
-        //e.getPlayer().sendMessage("" +  entities.getMobDataString(entity, "sus"));
+        e.getPlayer().sendMessage("" +  entities.getMobDataInt(entity, "age"));
     }
 }
