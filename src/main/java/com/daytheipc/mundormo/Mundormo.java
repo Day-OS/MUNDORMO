@@ -1,28 +1,21 @@
 package com.daytheipc.mundormo;
 
-import com.sun.tools.javac.Main;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
+import org.bukkit.GameRule;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
-import static org.bukkit.Bukkit.getServer;
-
 public final class Mundormo extends JavaPlugin implements Listener {
-    Entities entities = new Entities();
+    EntityController entityController;
+    PersistentData persistentData;
 
     public Plugin getInstance(){
         return this;
@@ -34,9 +27,11 @@ public final class Mundormo extends JavaPlugin implements Listener {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                entities._AreaCheck();
+                entityController._AreaCheck();
+                getLogger().log(Level.WARNING, "hiii");
             }
-        }, 0, 2400L);
+        }, 0, 1200L*3L / Bukkit.getWorlds().get(0).getGameRuleValue(GameRule.RANDOM_TICK_SPEED));
+        //1200L equals 1 entire minute, it multiplies by 3 as it is the default random tick speed, then it is divided by the actual tick speed
         getServer().getPluginManager().registerEvents(this, this);
     }
 
@@ -44,7 +39,7 @@ public final class Mundormo extends JavaPlugin implements Listener {
     public void onCreatureSpawn(CreatureSpawnEvent e){
         if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG){
             getLogger().log(Level.INFO, "" + e.getEntity().getEntityId());
-            entities.MobSpawned(e);
+            entityController.MobSpawned(e);
         }
 
     }
@@ -53,6 +48,6 @@ public final class Mundormo extends JavaPlugin implements Listener {
         LivingEntity entity = (LivingEntity) e.getRightClicked();
         //entities.setMobData(entity, "sus", "sus");
         e.getPlayer().sendMessage("" +  entity.getPersistentDataContainer().isEmpty());
-        e.getPlayer().sendMessage("" +  entities.getMobDataInt(entity, "age"));
+        e.getPlayer().sendMessage("" +  persistentData.getMobDataInt(entity, "age"));
     }
 }
