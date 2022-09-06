@@ -14,8 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public final class Mundormo extends JavaPlugin implements Listener {
-    EntityController entityController;
-    PersistentData persistentData;
+    EntityController entityController = new EntityController();
+    PersistentData persistentData = new PersistentData();
 
     public Plugin getInstance(){
         return this;
@@ -38,7 +38,6 @@ public final class Mundormo extends JavaPlugin implements Listener {
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent e){
         if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG){
-            getLogger().log(Level.INFO, "" + e.getEntity().getEntityId());
             entityController.MobSpawned(e);
         }
 
@@ -47,7 +46,8 @@ public final class Mundormo extends JavaPlugin implements Listener {
     public void onInteractAtEntity(PlayerInteractAtEntityEvent e){
         LivingEntity entity = (LivingEntity) e.getRightClicked();
         //entities.setMobData(entity, "sus", "sus");
-        e.getPlayer().sendMessage("" +  entity.getPersistentDataContainer().isEmpty());
-        e.getPlayer().sendMessage("" +  persistentData.getMobDataInt(entity, "age"));
+        e.getPlayer().sendMessage("Empty: " +  entity.getPersistentDataContainer().isEmpty());
+        e.getPlayer().sendMessage("Age: " +  persistentData.getMobDataInt(entity, entityController.keyAge));
+        e.getPlayer().sendMessage("Gender: " +  EntityController.gender.values()[persistentData.getMobDataInt(entity, entityController.keyGender)].name());
     }
 }
