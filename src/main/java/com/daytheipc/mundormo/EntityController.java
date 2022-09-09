@@ -26,7 +26,7 @@ public class EntityController {
     Plugin plugin;
     private final PersistentData persistentData = new PersistentData();
     Random random = new Random();
-    static long Year = 7300L; //7300 minutes IRL
+    static long Year = 7300L; //7300 minutes IRL (5 days)
 
 
 
@@ -35,7 +35,6 @@ public class EntityController {
     String keyGender = "gender"; // Enum
     String keyMute = "mute"; // Bool
     String keyInfertile = "infertile"; // Bool
-    String keyHunger = "hunger"; // Int
     String keyMaxHealthMultiplier = "maxhealth"; // Float
     String keySpeedMultiplier = "speed";// Float
     String keyAttackDamageMultiplier = "attackdmg"; // Float
@@ -50,10 +49,22 @@ public class EntityController {
     };
 
 
-    public void InitMob(LivingEntity e){
+    private void InitMob(LivingEntity e){
+        //UNCOMMENT THIS LINE AFTER CHUNK FILTERING have been made
+        //e.setPersistent(true);
+
+        //AGE
         persistentData.setMobData(e, keyAge,0);
+        //GENDER
         persistentData.setMobData(e, keyGender, gender.values()[random.nextInt(gender.values().length)].ordinal());
-        //persistentData.setMobData(e, keyGender, gender.female.ordinal() );
+        //MUTE
+        if ((random.nextInt(100)+1) > 99){persistentData.setMobData(e, keyMute,true); e.setSilent(true);}
+        else persistentData.setMobData(e, keyMute,false);
+        //INFERTILE
+        if ((random.nextInt(100)+1) > 70){persistentData.setMobData(e, keyInfertile,true);}
+        else persistentData.setMobData(e, keyInfertile,false);
+        //getLogger().log(Level.WARNING, "" + random.nextInt(gender.values().length) + "|" + gender.values().length);
+
     }
     private void UpdateMob(LivingEntity e){
         //Updates age

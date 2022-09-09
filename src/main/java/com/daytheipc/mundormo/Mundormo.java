@@ -28,7 +28,7 @@ public final class Mundormo extends JavaPlugin implements Listener {
             @Override
             public void run() {
                 entityController._AreaCheck();
-                getLogger().log(Level.WARNING, "hiii");
+                getLogger().log(Level.INFO, "HeartBeat tick!");
             }
         }, 0, 1200L*3L / Bukkit.getWorlds().get(0).getGameRuleValue(GameRule.RANDOM_TICK_SPEED));
         //1200L equals 1 entire minute, it multiplies by 3 as it is the default random tick speed, then it is divided by the actual tick speed
