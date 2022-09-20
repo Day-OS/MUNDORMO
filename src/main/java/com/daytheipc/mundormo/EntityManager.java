@@ -19,7 +19,7 @@ import java.util.Random;
 
 import static org.bukkit.Bukkit.*;
 
-public class EntityController {
+public class EntityManager {
     //DISABLE WANDERER AND VILLAGER
     //SNOW GOLEMS SHOULD BE DISABLED and instead be just a lifeless mob
     //CHICKENS MUST NOT DROP EGGS, instead it should follow the same rules as other animals
@@ -68,6 +68,7 @@ public class EntityController {
     }
     private void UpdateMob(LivingEntity e){
         //Updates age
+
         persistentData.setMobData(e, keyAge, (persistentData.getMobDataInt(e,"age")) + 1);
 
 

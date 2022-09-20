@@ -8,26 +8,26 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public final class Mundormo extends JavaPlugin implements Listener {
-    EntityController entityController = new EntityController();
+    EntityManager entityManager = new EntityManager();
     PersistentData persistentData = new PersistentData();
+    ChunkManager chunkManager = new ChunkManager(getDataFolder());
 
-    public Plugin getInstance(){
-        return this;
-    }
     @Override
     public void onEnable() {
+        chunkManager.Save();
         Logger logger = getLogger();
         logger.log(Level.WARNING, "hiii :33");
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
-                entityController._AreaCheck();
+                entityManager._AreaCheck();
                 getLogger().log(Level.INFO, "HeartBeat tick!");
             }
         }, 0, 1200L*3L / Bukkit.getWorlds().get(0).getGameRuleValue(GameRule.RANDOM_TICK_SPEED));
@@ -35,10 +35,11 @@ public final class Mundormo extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
     }
 
+
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent e){
         if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG){
-            entityController.MobSpawned(e);
+            entityManager.MobSpawned(e);
         }
 
     }
@@ -47,7 +48,7 @@ public final class Mundormo extends JavaPlugin implements Listener {
         LivingEntity entity = (LivingEntity) e.getRightClicked();
         //entities.setMobData(entity, "sus", "sus");
         e.getPlayer().sendMessage("Empty: " +  entity.getPersistentDataContainer().isEmpty());
-        e.getPlayer().sendMessage("Age: " +  persistentData.getMobDataInt(entity, entityController.keyAge));
-        e.getPlayer().sendMessage("Gender: " +  EntityController.gender.values()[persistentData.getMobDataInt(entity, entityController.keyGender)].name());
+        e.getPlayer().sendMessage("Age: " +  persistentData.getMobDataInt(entity, entityManager.keyAge));
+        e.getPlayer().sendMessage("Gender: " +  EntityManager.gender.values()[persistentData.getMobDataInt(entity, entityManager.keyGender)].name());
     }
 }
